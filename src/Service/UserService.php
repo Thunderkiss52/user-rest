@@ -27,7 +27,7 @@ class UserService
     {
         $user = new User();
         $user->setEmail($email);
-        $user->setPassword($password); // Перед хешированием валидируем исходный пароль
+        $user->setPassword($password);
 
         $errors = $this->validator->validate($user);
         if (count($errors) > 0) {
