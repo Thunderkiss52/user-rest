@@ -61,4 +61,18 @@ class UserService
         $this->em->remove($user);
         $this->em->flush();
     }
+
+    // Добавляем метод для обновления пароля
+    public function upgradePassword(User $user, string $newPassword): void
+    {
+        $hashedPassword = $this->passwordHasher->hashPassword($user, $newPassword);
+        $user->setPassword($hashedPassword);
+
+        $errors = $this->validator->validate($user);
+        if (count($errors) > 0) {
+            throw new \InvalidArgumentException((string) $errors);
+        }
+
+        $this->em->flush();
+    }
 }

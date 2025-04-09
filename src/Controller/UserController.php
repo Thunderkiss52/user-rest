@@ -58,6 +58,23 @@ final class UserController extends AbstractController
         }
     }
 
+    #[Route('/users/me/password', name: 'api_user_password_update', methods: ['PUT'])]
+    public function updatePassword(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        if (!isset($data['password'])) {
+            return $this->json(['error' => 'Password is required'], 400);
+        }
+
+        try {
+            $user = $this->getUser();
+            $this->userService->upgradePassword($user, $data['password']);
+            return $this->json(['message' => 'Password updated']);
+        } catch (\InvalidArgumentException $e) {
+            return $this->json(['error' => $e->getMessage()], 400);
+        }
+    }
+
     #[Route('/users/me', name: 'api_user_delete', methods: ['DELETE'])]
     public function deleteUser(): JsonResponse
     {
